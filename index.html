@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight Booking</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -27,12 +27,12 @@
     </header>
 
     <!--Booking Section-->
-    <main class="main-content container">
+    <section class="main-content container">
         <div class="booking-form">
             <h3>Booking Flights</h3>
             <div class="input-group">
                 <label for="">Flying From</label>
-                <input class="inp-style" type="text" name="" placeholder="Dhake, Bangladesh">
+                <input class="inp-style" type="text" name="" placeholder="Dhaka, Bangladesh">
             </div>
             <div class="input-group">
                 <label for="">Flying To</label>
@@ -50,21 +50,21 @@
             </div>
             <div class="input-group f-class">
                 <div>
-                    <label for="">First Class ($150)</label>
-                    <input class="inp-style inp-width" type="number" name="">
+                    <label for="">First Class ($150), Total: <span id="firstClass-total">$0</span></label>
+                    <input id="firstClass-count" class="inp-style inp-width" type="number" name="" value="0">
                 </div>
                 <div class="plus-minus-btn">
-                    <p>+ -</p>
+                    <p><span onclick="ticketChange('firstClass', true)"><i class="far fa-plus-square"></i></span><span onclick="ticketChange('firstClass', false)"><i class="far fa-minus-square"></i></span></p>
                 </div>
             </div>
             
             <div class="input-group f-class">
                 <div>
-                    <label for="">Economy ($100)</label>
-                    <input class="inp-style inp-width" type="number" name="">
+                    <label for="">Economy ($100), Total: <span id="economy-total">$0</span></label>
+                    <input id="economy-count" class="inp-style inp-width" type="number" name="" value="0">
                 </div>
                 <div class="plus-minus-btn">
-                    <p> <span>+</span> <span>-</span> </p>
+                    <p><span onclick="ticketChange('economy', true)"><i class="far fa-plus-square"></i></span><span onclick="ticketChange('economy', false)"><i class="far fa-minus-square"></i></span></p>
                 </div>
             </div>
             <div class="calculations">
@@ -73,7 +73,7 @@
                         <p>Subtotal</p>
                     </div>
                     <div class="right">
-                        <p>$500</p>
+                        <p id="sub-total">$0</p>
                     </div>
                 </div>
 
@@ -82,7 +82,7 @@
                         <p>Charge 10% VAT</p>
                     </div>
                     <div class="right">
-                        <p>$50</p>
+                        <p id="vat-amount">$0</p>
                     </div>
                 </div>
                 <hr>
@@ -91,7 +91,7 @@
                         <h4>Total</h4>
                     </div>
                     <div class="right">
-                        <p>$550</p>
+                        <p id="total">$0</p>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,49 @@
         </div>
     </section>
 
-    <!--Thank You-->
-</body>
+    <!-- JavaScript Start From Here -->
+    <script> 
+        function ticketChange(ticket, isPlus){
+            const ticketCount =  ticketValue(ticket);
+            let ticketNewCount = ticketCount;
+            if (isPlus == true) {
+                ticketNewCount = ticketCount + 1;
+            }
+            if (isPlus == false && ticketCount > 0){
+                ticketNewCount = ticketCount - 1;
+            }
+            document.getElementById(ticket + '-count').value = ticketNewCount;
+            let ticketTotal = 0;
+            if (ticket == 'firstClass') {
+                ticketTotal = ticketNewCount * 150;
+            }
+            if (ticket == 'economy') {
+                ticketTotal = ticketNewCount * 100;
+            }
 
+            document.getElementById(ticket + '-total').innerText = '$' + ticketTotal;
+            totalCalculate();
+        }
+
+        function totalCalculate(){
+            const firstClassCount = ticketValue('firstClass');
+            const economyCount = ticketValue('economy');
+
+            const subTotal = firstClassCount * 150 + economyCount * 100;
+            document.getElementById('sub-total').innerText = '$' + subTotal;
+
+            const vat = Math.round(subTotal * 0.1);
+            document.getElementById('vat-amount').innerText = '$' + vat;
+
+            const total = subTotal + vat;
+            document.getElementById('total').innerText = '$' + total;
+        }
+
+        function ticketValue(ticket){
+            const ticketInput = document.getElementById(ticket + '-count');
+            const ticketCount = parseInt(ticketInput.value);
+            return ticketCount;
+        }
+    </script>
+</body>
 </html>
